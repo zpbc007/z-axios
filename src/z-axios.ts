@@ -106,7 +106,7 @@ export class ZAxios<T extends AxiosRequestConfig = AxiosRequestConfig> {
      * @param config axios config
      */
     setConfig(config: T) {
-        if (config) {
+        if (!config) {
             throw new Error(CanNotBeEmptyTemplate('config'))
         }
 
