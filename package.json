@@ -5,8 +5,15 @@
   "types": "./dist/index.d.ts",
   "module": "./dist/index.es.js",
   "repository": "https://github.com/zpbc007/z-axios.git",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "author": "zhaopeng <719197352@qq.com>",
   "license": "MIT",
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "clean:dist": "rimraf dist/*",
     "min": "terser dist/index.js -o dist/index.min.js",
