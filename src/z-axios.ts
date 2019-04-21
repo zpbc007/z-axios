@@ -155,14 +155,14 @@ export class ZAxios {
 
     addReqInterceptor(
         onSuccess: (value: AxiosRequestConfig) => AxiosRequestConfig | Promise<AxiosRequestConfig>,
-        onError: (error: any) => any
+        onError?: (error: any) => any
     ) {
         return this.axiosIns.interceptors.request.use(onSuccess, onError)
     }
 
     addResInterceptor(
         onSuccess: (value: AxiosResponse) => AxiosResponse | Promise<AxiosResponse>,
-        onError: (error: any) => any
+        onError?: (error: any) => any
     ) {
         return this.axiosIns.interceptors.response.use(onSuccess, onError)
     }

@@ -1,4 +1,5 @@
 import typescript from 'rollup-plugin-typescript2'
+import commonjs from 'rollup-plugin-commonjs'
 
 import pkg from './package.json'
 
@@ -18,9 +19,11 @@ export default {
       sourcemap: true,
     },
   ],
+  external: ['axios'],
   plugins: [
     typescript({
       rollupCommonJSResolveHack: true,
     }),
+    commonjs()
   ],
 }
