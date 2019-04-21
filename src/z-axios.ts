@@ -1,28 +1,13 @@
-import Axios, {
-    AxiosRequestConfig,
-    AxiosInstance,
-    Canceler,
-    AxiosResponse,
-    AxiosInterceptorManager,
-} from 'axios'
+import Axios, { AxiosRequestConfig, AxiosInstance, Canceler, AxiosResponse } from 'axios'
 import { CanNotBeEmptyTemplate, OverrideTemplate } from './error-template'
 import { addQuery, replace } from './utils/path'
 const { CancelToken } = Axios
-
-interface IInterceptorItem<V> {
-    onSuccess?: (value: V) => V | Promise<V>
-    onError?: (error: any) => any
-}
 
 interface IConfig {
     /** 是否需要创建新的实例 */
     newIns?: boolean
     /** 创建新实例的配置 */
     insConfig?: AxiosRequestConfig
-    /** 请求中间件 */
-    reqInterceptors?: Array<IInterceptorItem<AxiosRequestConfig>>
-    /** 返回中间件 */
-    resInterceptors?: Array<IInterceptorItem<AxiosResponse>>
 }
 
 export class ZAxios {
@@ -34,20 +19,12 @@ export class ZAxios {
     private config: AxiosRequestConfig
     private cancel: Canceler
 
-    constructor({
-        newIns = false,
-        insConfig,
-        reqInterceptors = [],
-        resInterceptors = [],
-    }: IConfig = {}) {
+    constructor({ newIns = false, insConfig }: IConfig = {}) {
         if (newIns) {
             this.axiosIns = Axios.create(insConfig)
         } else {
             this.axiosIns = Axios
         }
-
-        this.addInterceptors(this.axiosIns.interceptors.request, reqInterceptors)
-        this.addInterceptors(this.axiosIns.interceptors.response, resInterceptors)
     }
 
     /**
@@ -176,6 +153,28 @@ export class ZAxios {
         this.clearConfig()
     }
 
+    addReqInterceptor(
+        onSuccess: (value: AxiosRequestConfig) => AxiosRequestConfig | Promise<AxiosRequestConfig>,
+        onError: (error: any) => any
+    ) {
+        return this.axiosIns.interceptors.request.use(onSuccess, onError)
+    }
+
+    addResInterceptor(
+        onSuccess: (value: AxiosResponse) => AxiosResponse | Promise<AxiosResponse>,
+        onError: (error: any) => any
+    ) {
+        return this.axiosIns.interceptors.response.use(onSuccess, onError)
+    }
+
+    ejectReqInterceptor(id: number) {
+        this.axiosIns.interceptors.request.eject(id)
+    }
+
+    ejectResInterceptor(id: number) {
+        this.axiosIns.interceptors.response.eject(id)
+    }
+
     private async sendRequest<T>(config: AxiosRequestConfig) {
         const reqConfig = this.buildReqConfig()
 
@@ -188,15 +187,6 @@ export class ZAxios {
         } finally {
             this.clearConfig()
         }
-    }
-
-    private addInterceptors(
-        manager: AxiosInterceptorManager<any>,
-        interceptors: Array<IInterceptorItem<any>>
-    ) {
-        interceptors.map(({ onError, onSuccess }) => {
-            manager.use(onSuccess, onError)
-        })
     }
 
     private buildReqConfig() {
