@@ -1,4 +1,10 @@
-import Axios, { AxiosRequestConfig, AxiosInstance, Canceler, AxiosResponse } from 'axios'
+import Axios, {
+    AxiosRequestConfig,
+    AxiosInstance,
+    Canceler,
+    AxiosResponse,
+    AxiosError,
+} from 'axios'
 import { CanNotBeEmptyTemplate, OverrideTemplate } from './error-template'
 import { addQuery, replace } from './utils/path'
 const { CancelToken } = Axios
@@ -153,7 +159,10 @@ export class ZAxios<T extends AxiosRequestConfig = AxiosRequestConfig> {
         this.clearConfig()
     }
 
-    addReqInterceptor(onSuccess: (value: T) => T | Promise<T>, onError?: (error: any) => any) {
+    addReqInterceptor(
+        onSuccess: (value: T) => T | Promise<T>,
+        onError?: (error: AxiosError) => any
+    ) {
         return this.axiosIns.interceptors.request.use(onSuccess as any, onError)
     }
 
