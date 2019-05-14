@@ -131,6 +131,13 @@ export class ZAxios<T extends AxiosRequestConfig = AxiosRequestConfig> {
         })
     }
 
+    put<R = any>() {
+        return this.sendRequest<R>({
+            method: 'put',
+            data: this.body,
+        })
+    }
+
     post<R = any>() {
         return this.sendRequest<R>({
             method: 'post',
